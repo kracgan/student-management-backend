@@ -151,7 +151,7 @@ curl -X POST http://localhost:8080/api/enrollments \
 ## ✍️ Author
 
 **Sumeet Shah**
-[LinkedIn](https://www.linkedin.com/in/sumeet-shah-7273/) • [GitHub](https://github.com/kracgan)
+[LinkedIn](https://www.linkedin.com/in/sumeet-shah-727366261/) • [GitHub](https://github.com/kracgan)
 
 ---
 
