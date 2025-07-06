@@ -158,15 +158,3 @@ curl -X POST http://localhost:8080/api/enrollments \
 ## 📝 License
 
 This project is open-source under the [MIT License](LICENSE).
-
-```
-
----
-
-Would you like me to:
-- Add badges (Maven build, Java version)?
-- Generate a `.sql` file from the schema?
-- Write a short `CONTRIBUTING.md` or `LICENSE` file?
-
-Let me know and I’ll add it for you!
-```
