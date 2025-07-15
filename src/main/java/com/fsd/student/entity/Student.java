@@ -2,11 +2,8 @@ package com.fsd.student.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
+import com.fasterxml.jackson.annotation.*;
 
 @Entity
 @Table(name = "students")
@@ -28,22 +25,18 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "dept_id")
+    @JsonBackReference("dept-students")
     private Department department;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonManagedReference("student-idcard")
     private StudentIDCard studentIDCard;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonManagedReference("student-user")
     private User user;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<Enrollment> enrolledSubjects;
-
-    @ManyToMany
-    @JoinTable(
-        name = "student_subjects",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private Set<Subject> subjects = new HashSet<>();
+    @JsonManagedReference("student-enrollments")
+    private List<Enrollment> enrollments;
 }

@@ -2,8 +2,8 @@ package com.fsd.student.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "student_id_cards")
@@ -16,13 +16,14 @@ public class StudentIDCard {
     @Column(name = "card_id")
     private String cardId;
 
-    @Temporal(TemporalType.DATE)
-    private Date issueDate;
+    private String cardNumber;
 
-    @Temporal(TemporalType.DATE)
-    private Date expiryDate;
+    private LocalDate issueDate;
+
+    private LocalDate expiryDate;
 
     @OneToOne
-    @JoinColumn(name = "student_id", unique = true)
+    @JoinColumn(name = "student_id")
+    @JsonBackReference("student-idcard")
     private Student student;
 }

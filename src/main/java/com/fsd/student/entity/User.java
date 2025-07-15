@@ -2,6 +2,7 @@ package com.fsd.student.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "users")
@@ -15,10 +16,10 @@ public class User {
     private String userId;
 
     private String username;
-    private String passwordHash;
-    private String role;
+    private String password;
 
     @OneToOne
-    @JoinColumn(name = "student_id", unique = true)
+    @JoinColumn(name = "student_id")
+    @JsonBackReference("student-user")
     private Student student;
 }

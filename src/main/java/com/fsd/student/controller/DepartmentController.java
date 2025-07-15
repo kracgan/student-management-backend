@@ -1,5 +1,6 @@
 package com.fsd.student.controller;
 
+import com.fsd.student.dto.DepartmentDTO;
 import com.fsd.student.entity.Department;
 import com.fsd.student.repository.DepartmentRepository;
 import com.fsd.student.response.ResponseBean;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/departments")
@@ -17,31 +19,31 @@ public class DepartmentController {
     private final DepartmentRepository departmentRepository;
 
     @GetMapping
-    public ResponseEntity<ResponseBean<List<Department>>> getAll() {
-        List<Department> departments = departmentRepository.findAll();
-        return ResponseEntity.ok(ResponseBean.success(departments, "Departments fetched successfully"));
+    public ResponseEntity<ResponseBean<List<DepartmentDTO>>> getAll() {
+        List<DepartmentDTO> dtos = departmentRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseBean.success(dtos, "Departments fetched successfully"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBean<Department>> getById(@PathVariable String id) {
+    public ResponseEntity<ResponseBean<DepartmentDTO>> getById(@PathVariable String id) {
         return departmentRepository.findById(id)
-                .map(dept -> ResponseEntity.ok(ResponseBean.success(dept, "Department found")))
+                .map(dept -> ResponseEntity.ok(ResponseBean.success(convertToDTO(dept), "Department found")))
                 .orElseGet(() -> ResponseEntity.status(404).body(ResponseBean.error("Department not found")));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseBean<Department>> create(@RequestBody Department dept) {
-        Department saved = departmentRepository.save(dept);
-        return ResponseEntity.ok(ResponseBean.success(saved, "Department created successfully"));
+    public ResponseEntity<ResponseBean<DepartmentDTO>> create(@RequestBody DepartmentDTO dto) {
+        Department saved = departmentRepository.save(convertToEntity(dto));
+        return ResponseEntity.ok(ResponseBean.success(convertToDTO(saved), "Department created successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseBean<Department>> update(@PathVariable String id, @RequestBody Department dept) {
+    public ResponseEntity<ResponseBean<DepartmentDTO>> update(@PathVariable String id, @RequestBody DepartmentDTO dto) {
         return departmentRepository.findById(id)
                 .map(existing -> {
-                    dept.setDeptId(id);
-                    Department updated = departmentRepository.save(dept);
-                    return ResponseEntity.ok(ResponseBean.success(updated, "Department updated successfully"));
+                    dto.setDeptId(id);
+                    Department updated = departmentRepository.save(convertToEntity(dto));
+                    return ResponseEntity.ok(ResponseBean.success(convertToDTO(updated), "Department updated successfully"));
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(ResponseBean.error("Department not found")));
     }
@@ -54,5 +56,21 @@ public class DepartmentController {
                     return ResponseEntity.ok(ResponseBean.success(id, "Department deleted successfully"));
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(ResponseBean.error("Department not found")));
+    }
+
+    private DepartmentDTO convertToDTO(Department dept) {
+        DepartmentDTO dto = new DepartmentDTO();
+        dto.setDeptId(dept.getDeptId());
+        dto.setDeptName(dept.getDeptName());
+        dto.setDeptHead(dept.getDeptHead());
+        return dto;
+    }
+
+    private Department convertToEntity(DepartmentDTO dto) {
+        Department dept = new Department();
+        dept.setDeptId(dto.getDeptId());
+        dept.setDeptName(dto.getDeptName());
+        dept.setDeptHead(dto.getDeptHead());
+        return dept;
     }
 }

@@ -7,4 +7,5 @@ public class EnrollmentDTO {
     private String id;
     private String studentId;
     private String subjectId;
+    private String enrollmentDate;
 }
