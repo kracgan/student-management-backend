@@ -1,18 +1,19 @@
 # 🎓 Student Management System - Backend API
 
-A full-featured Spring Boot REST API for managing students, subjects, departments, and enrollments in an academic system. Built using Java 21, Spring Boot, and PostgreSQL.
+A modern Spring Boot REST API for managing students, subjects, departments, and enrollments using a DTO-driven architecture and clean controller-repository pattern.
 
 ---
 
 ## 🚀 Features
 
-- Manage Students, Subjects, Departments
-- Enroll Students in Subjects (Many-to-Many)
-- Auto-generated API docs via Swagger
+- Manage Students, Departments, Subjects, ID Cards, Users, and Enrollments
+- Clean architecture: DTOs + Repository pattern (No Service Layer)
+- Many-to-Many enrollment with `Enrollment` entity
+- One-to-One mapping between Student ↔ IDCard, Student ↔ User
+- Unified API responses via `ResponseBean<T>`
+- Swagger/OpenAPI UI enabled
 - PostgreSQL integration with JPA/Hibernate
-- Standardized API responses using `ResponseBean`
-- DTO-free design with entity-based transfers
-- Clean and extendable codebase
+- No business logic in services — all logic inside controllers
 
 ---
 
@@ -24,61 +25,64 @@ student/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/fsd/student/
-│   │   │   ├── controller/
-│   │   │   ├── entity/
-│   │   │   ├── repository/
-│   │   │   ├── response/
+│   │   │   ├── controller/         # REST controllers (DTO-based)
+│   │   │   ├── dto/                # All request/response DTOs
+│   │   │   ├── entity/             # JPA entities
+│   │   │   ├── repository/         # Spring Data JPA repositories
+│   │   │   ├── response/           # ResponseBean<T> wrapper
 │   │   │   └── StudentApplication.java
 │   │   └── resources/
 │   │       └── application.properties
 │   └── test/
 │       └── java/com/fsd/student/StudentApplicationTests.java
 
-````
+```
 
 ---
 
-## 🗃️ Entities Overview
+## 🗃️ Entity Overview
 
-| Entity         | Description                              |
-|----------------|------------------------------------------|
-| Department     | Academic department (e.g. CS, IT)         |
-| Student        | Student profile with dept and ID card     |
-| Subject        | Academic subjects                         |
-| StudentSubject | Join table for Many-to-Many enrollment    |
-| StudentIDCard  | One-to-One relation with Student          |
-| User           | Login credentials tied to Student         |
-
----
-
-## 🔗 Database Schema
-
-- RDBMS: **PostgreSQL**
-- Auto schema creation via JPA (`ddl-auto=update`)
-- See [`schema.sql`](#) for manual DB structure
+| Entity        | Description                                     |
+| ------------- | ----------------------------------------------- |
+| Department    | Academic department (e.g. CS, IT)               |
+| Student       | Student profile (with Department & IDCard)      |
+| Subject       | Academic subject                                |
+| Enrollment    | Join table for Many-to-Many (Student ↔ Subject) |
+| StudentIDCard | One-to-One with Student                         |
+| User          | Authentication entity linked to Student         |
 
 ---
 
-## ⚙️ Technologies
+## 🔄 DTO Usage
+
+All entities now use DTOs for input/output:
+
+- `StudentDTO`, `DepartmentDTO`, `SubjectDTO`, `EnrollmentDTO`, `UserDTO`, `StudentIDCardDTO`
+- Controllers map entities ↔ DTOs internally
+- JSON payloads are clean, flattened, and avoid recursion
+
+---
+
+## ⚙️ Tech Stack
 
 - Java 21
 - Spring Boot 3.x
 - Spring Data JPA
 - PostgreSQL
-- Swagger / OpenAPI
 - Lombok
+- Swagger/OpenAPI
 - Maven
 
 ---
 
-## 🛠️ Setup & Run
+## 🛠️ Setup Instructions
 
 ### 1. Clone this repository
 
 ```bash
 git clone https://github.com/yourusername/student-management-backend.git
 cd student-management-backend
-````
+```
 
 ### 2. Configure PostgreSQL in `application.properties`
 
@@ -89,7 +93,7 @@ spring.datasource.password=your_db_password
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-### 3. Run the project
+### 3. Run the Project
 
 ```bash
 mvn spring-boot:run
@@ -103,11 +107,9 @@ java -jar target/student-0.0.1-SNAPSHOT.jar
 
 ---
 
-## 📚 Swagger API Docs
+## 🔍 API Documentation
 
-> Swagger UI is enabled by default.
-
-Visit:
+Swagger UI is enabled by default. After starting the app, visit:
 
 ```
 http://localhost:8080/swagger-ui/index.html
@@ -115,26 +117,27 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-## ✅ API Endpoints (Examples)
+## ✅ Example API Endpoints
 
-| Method | Endpoint                | Description               |
-| ------ | ----------------------- | ------------------------- |
-| GET    | `/api/students`         | Get all students          |
-| POST   | `/api/students`         | Add a student             |
-| GET    | `/api/subjects`         | Get all subjects          |
-| POST   | `/api/enrollments`      | Enroll student in subject |
-| DELETE | `/api/departments/{id}` | Delete a department       |
+| Method | Endpoint           | Description               |
+| ------ | ------------------ | ------------------------- |
+| GET    | `/api/students`    | List all students         |
+| POST   | `/api/students`    | Add new student           |
+| GET    | `/api/subjects`    | List all subjects         |
+| POST   | `/api/enrollments` | Enroll student in subject |
+| DELETE | `/api/users/{id}`  | Delete a user             |
 
 ---
 
-## 📦 Sample CURL (Enrollment)
+## 📦 Sample CURL - Create Enrollment
 
 ```bash
 curl -X POST http://localhost:8080/api/enrollments \
 -H "Content-Type: application/json" \
 -d '{
-  "student": { "studentId": "STU001" },
-  "subject": { "subjectId": "SUBJ101" }
+  "studentId": "STU001",
+  "subjectId": "SUBJ101",
+  "enrollmentDate": "2025-07-14"
 }'
 ```
 
@@ -142,9 +145,10 @@ curl -X POST http://localhost:8080/api/enrollments \
 
 ## 📌 Developer Notes
 
-* Designed with clarity and separation of concerns
-* No `service/` layer yet (can be added later)
-* Each controller returns a consistent `ResponseBean<T>`
+- Controllers use repositories directly (no service layer)
+- Business logic is controller-managed
+- DTOs used for cleaner request/response models
+- `ResponseBean<T>` ensures consistent success/error responses
 
 ---
 
@@ -157,4 +161,4 @@ curl -X POST http://localhost:8080/api/enrollments \
 
 ## 📝 License
 
-This project is open-source under the [MIT License](LICENSE).
+Open-source under the [MIT License](LICENSE)
