@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentSubject {
+public class Enrollment {
 
     @Id
     private String id;

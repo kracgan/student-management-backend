@@ -1,10 +1,10 @@
 package com.fsd.student.controller;
 
 import com.fsd.student.entity.Student;
-import com.fsd.student.entity.StudentSubject;
+import com.fsd.student.entity.Enrollment;
 import com.fsd.student.entity.Subject;
 import com.fsd.student.repository.StudentRepository;
-import com.fsd.student.repository.StudentSubjectRepository;
+import com.fsd.student.repository.EnrollmentRepository;
 import com.fsd.student.repository.SubjectRepository;
 import com.fsd.student.response.ResponseBean;
 import lombok.RequiredArgsConstructor;
@@ -16,27 +16,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/enrollments")
 @RequiredArgsConstructor
-public class StudentSubjectController {
+public class EnrollmentController {
 
-    private final StudentSubjectRepository studentSubjectRepository;
+    private final EnrollmentRepository studentSubjectRepository;
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;
 
     @GetMapping
-    public ResponseEntity<ResponseBean<List<StudentSubject>>> getAll() {
-        List<StudentSubject> records = studentSubjectRepository.findAll();
+    public ResponseEntity<ResponseBean<List<Enrollment>>> getAll() {
+        List<Enrollment> records = studentSubjectRepository.findAll();
         return ResponseEntity.ok(ResponseBean.success(records, "Enrollments fetched successfully"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBean<StudentSubject>> getById(@PathVariable String id) {
+    public ResponseEntity<ResponseBean<Enrollment>> getById(@PathVariable String id) {
         return studentSubjectRepository.findById(id)
                 .map(enroll -> ResponseEntity.ok(ResponseBean.success(enroll, "Enrollment found")))
                 .orElseGet(() -> ResponseEntity.status(404).body(ResponseBean.error("Enrollment not found")));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseBean<StudentSubject>> create(@RequestBody StudentSubject enroll) {
+    public ResponseEntity<ResponseBean<Enrollment>> create(@RequestBody Enrollment enroll) {
         Student student = enroll.getStudent();
         Subject subject = enroll.getSubject();
 
@@ -48,12 +48,12 @@ public class StudentSubjectController {
             subjectRepository.findById(subject.getSubjectId()).ifPresent(enroll::setSubject);
         }
 
-        StudentSubject saved = studentSubjectRepository.save(enroll);
+        Enrollment saved = studentSubjectRepository.save(enroll);
         return ResponseEntity.ok(ResponseBean.success(saved, "Enrollment created successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseBean<StudentSubject>> update(@PathVariable String id, @RequestBody StudentSubject enroll) {
+    public ResponseEntity<ResponseBean<Enrollment>> update(@PathVariable String id, @RequestBody Enrollment enroll) {
         return studentSubjectRepository.findById(id)
                 .map(existing -> {
                     enroll.setId(id);
@@ -68,7 +68,7 @@ public class StudentSubjectController {
                         subjectRepository.findById(subject.getSubjectId()).ifPresent(enroll::setSubject);
                     }
 
-                    StudentSubject updated = studentSubjectRepository.save(enroll);
+                    Enrollment updated = studentSubjectRepository.save(enroll);
                     return ResponseEntity.ok(ResponseBean.success(updated, "Enrollment updated successfully"));
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body(ResponseBean.error("Enrollment not found")));

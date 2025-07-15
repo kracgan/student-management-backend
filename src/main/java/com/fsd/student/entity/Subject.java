@@ -26,7 +26,7 @@ public class Subject {
     private Department department;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    private List<StudentSubject> enrolledStudents;
+    private List<Enrollment> enrolledStudents;
 
     // ✅ Inverse side of Many-to-Many with Student
     @ManyToMany(mappedBy = "subjects")

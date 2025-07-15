@@ -37,7 +37,7 @@ public class Student {
     private User user;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<StudentSubject> enrolledSubjects;
+    private List<Enrollment> enrolledSubjects;
 
     @ManyToMany
     @JoinTable(
