@@ -11,13 +11,15 @@ public class UserDTO {
     private String username;
     private String password;
     private String studentId;
+    private String role;
 
     public static UserDTO fromEntity(User user) {
         return new UserDTO(
                 user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
-                user.getStudent() != null ? user.getStudent().getStudentId() : null
+                user.getStudent() != null ? user.getStudent().getStudentId() : null,
+                user.getRole()
         );
     }
 
@@ -26,6 +28,7 @@ public class UserDTO {
         user.setUserId(this.userId);
         user.setUsername(this.username);
         user.setPassword(this.password);
+        user.setRole(this.role);
         // student will be set externally in controller
         return user;
     }
