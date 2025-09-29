@@ -29,7 +29,7 @@ public class SwaggerConfig {
                         )
                 .externalDocs(new ExternalDocumentation()
                         .description("Project Repository")
-                        .url("https://github.com/kracgan/student-management-backend"))
+                        .url("https://github.com/kracgan/student-management-backend.git"))
                 .servers(List.of(
                         new Server().url("http://localhost:8080").description("Local Server")
                 ));
