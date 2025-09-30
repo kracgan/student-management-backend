@@ -32,9 +32,10 @@ public class Student {
     @JsonManagedReference("student-idcard")
     private StudentIDCard studentIDCard;
 
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "student")
     @JsonManagedReference("student-user")
-    private User user;
+    private StudentUser studentUser;
+
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @JsonManagedReference("student-enrollments")
