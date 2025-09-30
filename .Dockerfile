@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Copy your JAR file
-COPY target/student-management-backend-0.0.1-SNAPSHOT.jar app.jar
+COPY target/student-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port
 EXPOSE 8080
